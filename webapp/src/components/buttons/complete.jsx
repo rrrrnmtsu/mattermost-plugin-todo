@@ -1,6 +1,8 @@
 import React, {useCallback} from 'react';
 import PropTypes from 'prop-types';
 
+import {translate} from '../../localization';
+
 import CompassIcon from '../icons/compassIcons';
 
 const CompleteButton = (props) => {
@@ -16,6 +18,7 @@ const CompleteButton = (props) => {
     return (
         <button
             className={`todo-item__checkbox ${props.active ? 'todo-item__checkbox--active' : ''}`}
+            aria-label={translate('Complete Todo', 'タスクを完了')}
             onClick={markTodoAsDone}
         >
             <CompassIcon

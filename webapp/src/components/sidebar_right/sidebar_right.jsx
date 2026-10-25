@@ -235,7 +235,7 @@ export default class SidebarRight extends React.PureComponent {
                     renderThumbHorizontal={renderThumbHorizontal}
                     renderThumbVertical={renderThumbVertical}
                     renderView={renderView}
-                    className='SidebarRight'
+                    className='SidebarRight sakura-todo-panel'
                 >
                     <div className='todolist-header'>
                         <MenuWrapper>

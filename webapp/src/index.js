@@ -1,4 +1,8 @@
 import React from 'react';
+import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
+
+import {configureLocale, translate} from './localization';
+import './sakura_mobile.scss';
 
 import {id as pluginId} from './manifest';
 
@@ -19,7 +23,9 @@ const activityTimeout = 60 * 60 * 1000; // 1 hour
 
 export default class Plugin {
     initialize(registry, store) {
-        const {toggleRHSPlugin, showRHSPlugin} = registry.registerRightHandSidebarComponent(SidebarRight, 'Todo List');
+        configureLocale(() => getCurrentUser(store.getState())?.locale || navigator.language);
+        const {toggleRHSPlugin, showRHSPlugin} = registry.registerRightHandSidebarComponent(SidebarRight, translate('Todo List', 'タスク'));
+        registry.registerMainMenuAction(translate('Tasks', 'タスク'), () => store.dispatch(toggleRHSPlugin));
 
         registry.registerReducer(reducer);
         registry.registerRootComponent(Root);
@@ -28,7 +34,7 @@ export default class Plugin {
         registry.registerBottomTeamSidebarComponent(TeamSidebar);
 
         registry.registerPostDropdownMenuAction(
-            'Add Todo',
+            translate('Add Todo', 'タスクに追加'),
             (postID) => {
                 telemetry('post_action_click');
                 store.dispatch(openAddCard(postID));
@@ -43,8 +49,8 @@ export default class Plugin {
                 telemetry('channel_header_click');
                 store.dispatch(toggleRHSPlugin);
             },
-            'Todo',
-            'Open your list of Todo issues',
+            translate('Todo', 'タスク'),
+            translate('Open your list of Todo issues', 'タスク一覧を開く'),
         );
 
         const getFrontendListName = (backendListName) => {
@@ -77,7 +83,7 @@ export default class Plugin {
         registry.registerAppBarComponent(
             iconURL,
             () => store.dispatch(toggleRHSPlugin),
-            'Open your list of Todo issues',
+            translate('Open your list of Todo issues', 'タスク一覧を開く'),
         );
 
         registry.registerWebSocketEventHandler(`custom_${pluginId}_refresh`, refresh);

@@ -1,8 +1,11 @@
+
 import React, {useState, useRef, useCallback} from 'react';
 import PropTypes from 'prop-types';
 
 import {changeOpacity, makeStyleFromTheme} from 'mattermost-redux/utils/theme_utils';
 import TextareaAutosize from 'react-textarea-autosize';
+
+import {isComposingEvent} from '../../keyboard';
 
 import CompleteButton from '../buttons/complete';
 import AcceptButton from '../buttons/accept';
@@ -88,6 +91,9 @@ function TodoItem(props) {
     );
 
     const onKeyDown = (e) => {
+        if (isComposingEvent(e)) {
+            return;
+        }
         if (e.key === 'Enter' && !e.shiftKey) {
             saveEditedTodo();
         }

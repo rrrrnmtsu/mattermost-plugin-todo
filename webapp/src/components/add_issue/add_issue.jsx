@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -7,6 +8,8 @@ import {
 } from 'mattermost-redux/utils/theme_utils';
 
 import TextareaAutosize from 'react-textarea-autosize';
+
+import {isComposingEvent} from '../../keyboard';
 
 import FullScreenModal from '../modals/modals.jsx';
 import Button from '../../widget/buttons/button';
@@ -104,6 +107,9 @@ export default class AddIssue extends React.PureComponent {
     }
 
     onKeyDown = (e) => {
+        if (isComposingEvent(e)) {
+            return;
+        }
         if (e.key === 'Enter' && !e.shiftKey) {
             this.submit();
         }
