@@ -198,6 +198,12 @@ func (p *Plugin) handleAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Validate the actor before creating a task or posting through the bot.
+	if addRequest.PostID != "" && !p.canLinkPost(userID, addRequest.PostID) {
+		http.Error(w, "Post is unavailable", http.StatusNotFound)
+		return
+	}
+
 	senderName := p.listManager.GetUserName(userID)
 
 	if addRequest.SendTo == "" {
@@ -213,7 +219,7 @@ func (p *Plugin) handleAdd(w http.ResponseWriter, r *http.Request) {
 		p.sendRefreshEvent(userID, []string{MyListKey})
 
 		replyMessage := fmt.Sprintf("@%s attached a todo to this thread", senderName)
-		p.postReplyIfNeeded(addRequest.PostID, replyMessage, addRequest.Message)
+		p.postReplyIfNeeded(userID, addRequest.PostID, replyMessage, addRequest.Message)
 
 		return
 	}
@@ -238,7 +244,7 @@ func (p *Plugin) handleAdd(w http.ResponseWriter, r *http.Request) {
 		p.sendRefreshEvent(userID, []string{MyListKey})
 
 		replyMessage := fmt.Sprintf("@%s attached a todo to this thread", senderName)
-		p.postReplyIfNeeded(addRequest.PostID, replyMessage, addRequest.Message)
+		p.postReplyIfNeeded(userID, addRequest.PostID, replyMessage, addRequest.Message)
 		return
 	}
 
@@ -269,11 +275,11 @@ func (p *Plugin) handleAdd(w http.ResponseWriter, r *http.Request) {
 	p.PostBotCustomDM(receiver.Id, receiverMessage, addRequest.Message, issueID)
 
 	replyMessage := fmt.Sprintf("@%s sent @%s a todo attached to this thread", senderName, addRequest.SendTo)
-	p.postReplyIfNeeded(addRequest.PostID, replyMessage, addRequest.Message)
+	p.postReplyIfNeeded(userID, addRequest.PostID, replyMessage, addRequest.Message)
 }
 
-func (p *Plugin) postReplyIfNeeded(postID, message, todo string) {
-	if postID != "" {
+func (p *Plugin) postReplyIfNeeded(userID, postID, message, todo string) {
+	if postID != "" && p.canLinkPost(userID, postID) {
 		err := p.ReplyPostBot(postID, message, todo)
 		if err != nil {
 			p.API.LogError(err.Error())
@@ -486,7 +492,7 @@ func (p *Plugin) handleComplete(w http.ResponseWriter, r *http.Request) {
 
 	userName := p.listManager.GetUserName(userID)
 	replyMessage := fmt.Sprintf("@%s completed a todo attached to this thread", userName)
-	p.postReplyIfNeeded(issue.PostID, replyMessage, issue.Message)
+	p.postReplyIfNeeded(userID, issue.PostID, replyMessage, issue.Message)
 
 	if foreignID == "" {
 		return
@@ -525,7 +531,7 @@ func (p *Plugin) handleRemove(w http.ResponseWriter, r *http.Request) {
 
 	userName := p.listManager.GetUserName(userID)
 	replyMessage := fmt.Sprintf("@%s removed a todo attached to this thread", userName)
-	p.postReplyIfNeeded(issue.PostID, replyMessage, issue.Message)
+	p.postReplyIfNeeded(userID, issue.PostID, replyMessage, issue.Message)
 
 	if foreignID == "" {
 		return

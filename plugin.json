@@ -2,11 +2,11 @@
     "id": "com.mattermost.plugin-todo",
     "name": "Todo",
     "description": "This plugin makes it easy to keep track of Todo issues and get daily reminders.",
-    "homepage_url": "https://github.com/mattermost/mattermost-plugin-todo",
-    "support_url": "https://github.com/mattermost/mattermost-plugin-todo/issues",
-    "release_notes_url": "https://github.com/mattermost/mattermost-plugin-todo/releases/tag/v0.7.1",
-    "version": "0.7.1",
-    "min_server_version": "6.5.0",
+    "homepage_url": "https://github.com/rrrrnmtsu/mattermost-plugin-todo",
+    "support_url": "https://github.com/rrrrnmtsu/mattermost-plugin-todo/issues",
+    "release_notes_url": "https://github.com/rrrrnmtsu/mattermost-plugin-todo/blob/codex/mmwp-todo-auth-20261025/FORK.md",
+    "version": "0.7.1-sakura.1",
+    "min_server_version": "11.7.14",
     "server": {
         "executables": {
             "linux-amd64": "server/dist/plugin-linux-amd64",

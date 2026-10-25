@@ -311,7 +311,7 @@ func (p *Plugin) runPopCommand(_ []string, extra *model.CommandArgs) (bool, erro
 	responseMessage := "Removed top Todo."
 
 	replyMessage := fmt.Sprintf("@%s popped a todo attached to this thread", userName)
-	p.postReplyIfNeeded(issue.PostID, replyMessage, issue.Message)
+	p.postReplyIfNeeded(extra.UserId, issue.PostID, replyMessage, issue.Message)
 
 	issues, err := p.listManager.GetIssueList(extra.UserId, MyListKey)
 	if err != nil {
